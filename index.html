@@ -1,0 +1,256 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>YatraSuraksha — Smart Pilgrimage Safety</title>
+<style>
+:root{
+  --green:#164b3b; --green2:#22634e; --mint:#e8f4ee; --cream:#f7f5ef;
+  --orange:#e4863d; --red:#d9534f; --yellow:#d99b25; --blue:#3f7891;
+  --text:#18312a; --muted:#6f7f79; --white:#fff; --border:#dce6e0;
+  --shadow:0 14px 40px rgba(21,52,42,.10);
+}
+*{box-sizing:border-box}
+body{margin:0;font-family:Inter,ui-sans-serif,system-ui,-apple-system,Segoe UI,sans-serif;background:var(--cream);color:var(--text)}
+button{font:inherit;cursor:pointer;border:0}
+.app{display:flex;min-height:100vh}
+.sidebar{width:245px;background:var(--green);color:#fff;padding:25px 17px;position:fixed;inset:0 auto 0 0;z-index:5}
+.logo{display:flex;align-items:center;gap:11px;padding:5px 9px 28px;font-weight:800;font-size:20px}
+.logo-mark{width:38px;height:38px;border-radius:12px;background:#e9b66e;display:grid;place-items:center;color:var(--green);font-size:20px}
+.nav{display:grid;gap:7px}
+.nav button{background:transparent;color:#d9e9e2;text-align:left;padding:12px 13px;border-radius:12px;display:flex;gap:12px;align-items:center}
+.nav button:hover,.nav button.active{background:rgba(255,255,255,.12);color:#fff}
+.side-bottom{position:absolute;bottom:24px;left:17px;right:17px;background:rgba(255,255,255,.08);padding:15px;border-radius:15px;font-size:12px;color:#d5e6df}
+.main{margin-left:245px;width:calc(100% - 245px);padding:22px 28px 40px}
+.topbar{display:flex;justify-content:space-between;align-items:center;margin-bottom:20px}
+.crumb{font-size:13px;color:var(--muted)} h1{margin:3px 0 0;font-size:28px}
+.profile{display:flex;align-items:center;gap:10px}.avatar{width:40px;height:40px;border-radius:50%;background:#dceee6;display:grid;place-items:center;font-weight:800}
+.page{display:none}.page.active{display:block}
+.hero{border-radius:25px;padding:28px;color:#fff;background:linear-gradient(125deg,#174d3c,#2e7459 58%,#3f7961);box-shadow:var(--shadow);position:relative;overflow:hidden}
+.hero:after{content:"";position:absolute;width:310px;height:310px;border:55px solid rgba(255,255,255,.06);border-radius:50%;right:-80px;top:-120px}
+.hero small{opacity:.78}.hero h2{font-size:34px;max-width:600px;margin:8px 0}.hero p{max-width:650px;color:#dcebe5}
+.status-pill{display:inline-flex;align-items:center;gap:7px;background:#dff4e8;color:#17553e;border-radius:99px;padding:7px 12px;font-weight:700;font-size:12px}
+.grid{display:grid;gap:16px}.four{grid-template-columns:repeat(4,1fr)}.three{grid-template-columns:repeat(3,1fr)}.two{grid-template-columns:1.35fr 1fr}
+.card{background:#fff;border:1px solid var(--border);border-radius:18px;padding:18px;box-shadow:0 7px 24px rgba(21,52,42,.05)}
+.metric{margin-top:16px}.metric .icon{font-size:23px}.metric h3{font-size:26px;margin:7px 0 2px}.muted{color:var(--muted);font-size:13px}
+.good{color:#258052}.warn{color:#ad7711}.danger{color:#c74743}
+.section-title{display:flex;justify-content:space-between;align-items:center;margin:25px 0 12px}.section-title h3{margin:0;font-size:17px}
+.btn{background:var(--green);color:#fff;padding:10px 15px;border-radius:11px;font-weight:700}.btn.light{background:var(--mint);color:var(--green)}.btn.red{background:var(--red)}
+.alert{display:flex;gap:13px;align-items:flex-start}.alert-icon{width:40px;height:40px;border-radius:12px;display:grid;place-items:center;background:#fff0df}.alert h4{margin:0 0 4px}.alert p{margin:0;font-size:13px;color:var(--muted)}
+.guide{display:flex;gap:13px}.guide-photo{width:52px;height:52px;border-radius:14px;background:#dceee6;display:grid;place-items:center;font-size:23px}
+.badge{font-size:11px;background:#e4f5ea;color:#24764d;padding:4px 7px;border-radius:8px;font-weight:800}
+.stars{color:#dc9728}.route{display:flex;gap:8px;align-items:center;margin:15px 0}.dot{width:11px;height:11px;border-radius:50%;background:#2b8b64}.line{height:2px;background:#c9ddd4;flex:1}
+.progress{height:9px;background:#e9efec;border-radius:10px;overflow:hidden}.progress span{display:block;height:100%;background:var(--green2);border-radius:10px}
+.map{height:320px;border-radius:18px;background:linear-gradient(140deg,#dcefe6,#eef4e9);position:relative;overflow:hidden}
+.map:before,.map:after{content:"";position:absolute;background:#c7dfd5;transform:rotate(-18deg);height:15px;width:130%;left:-10%;top:45%}.map:after{transform:rotate(22deg);top:62%;background:#d6e8d8}
+.pin{position:absolute;width:18px;height:18px;border:4px solid #fff;border-radius:50%;background:var(--red);box-shadow:0 5px 15px #0002;z-index:2}
+.map-label{position:absolute;z-index:3;background:#fff;padding:7px 9px;border-radius:9px;font-size:11px;box-shadow:0 5px 15px #0001}
+.health-score{display:flex;align-items:center;gap:22px}.circle{width:105px;height:105px;border-radius:50%;display:grid;place-items:center;background:conic-gradient(#2d8a66 0 78%,#e7eee9 78%);position:relative}.circle:after{content:"";position:absolute;width:78px;height:78px;background:#fff;border-radius:50%}.circle b{z-index:2;font-size:24px}
+.table{width:100%;border-collapse:collapse}.table th,.table td{text-align:left;padding:12px;border-bottom:1px solid #edf1ef;font-size:13px}.table th{color:var(--muted);font-weight:600}
+.kpi{display:flex;justify-content:space-between;align-items:center}.kpi b{font-size:24px}
+.sos{min-height:270px;display:grid;place-items:center;text-align:center}.sos-button{width:150px;height:150px;border-radius:50%;background:#d9534f;color:white;font-size:25px;font-weight:900;box-shadow:0 0 0 14px #fde6e5,0 18px 35px #d9534f55}.sos-button:active{transform:scale(.97)}
+.toast{position:fixed;right:25px;bottom:25px;background:#173f32;color:#fff;padding:14px 17px;border-radius:13px;display:none;z-index:20;box-shadow:var(--shadow)}
+.mobile-nav{display:none}
+@media(max-width:1050px){.four{grid-template-columns:repeat(2,1fr)}.two{grid-template-columns:1fr}.sidebar{width:210px}.main{margin-left:210px;width:calc(100% - 210px)}}
+@media(max-width:720px){.sidebar{display:none}.main{margin:0;padding:17px 15px 80px;width:100%}.four,.three{grid-template-columns:1fr}.hero h2{font-size:27px}.topbar{align-items:flex-start}.mobile-nav{display:flex;position:fixed;bottom:0;left:0;right:0;background:#fff;border-top:1px solid var(--border);z-index:10;justify-content:space-around;padding:9px}.mobile-nav button{background:transparent;font-size:11px;color:var(--muted)}}
+</style>
+</head>
+<body>
+<div class="app">
+<aside class="sidebar">
+  <div class="logo"><div class="logo-mark">🏔</div>YatraSuraksha</div>
+  <nav class="nav">
+    <button class="active" onclick="showPage('home',this)">🏠 <span>Overview</span></button>
+    <button onclick="showPage('safety',this)">🛡️ <span>Live Safety</span></button>
+    <button onclick="showPage('crowd',this)">🗺️ <span>Crowd & Routes</span></button>
+    <button onclick="showPage('guides',this)">✓ <span>Verified Guides</span></button>
+    <button onclick="showPage('heritage',this)">🏛️ <span>Heritage Explorer</span></button>
+    <button onclick="showPage('health',this)">🏔️ <span>Health & Altitude</span></button>
+    <button onclick="showPage('sos',this)">🆘 <span>Emergency SOS</span></button>
+    <button onclick="showPage('admin',this)">📊 <span>Authority Dashboard</span></button>
+  </nav>
+  <div class="side-bottom"><b>Demo mode</b><br>Live data is simulated for the SIH prototype.</div>
+</aside>
+
+<main class="main">
+<header class="topbar"><div><div class="crumb">YatraSuraksha / <span id="pageName">Overview</span></div><h1 id="title">Good morning, Pilgrim 🙏</h1></div><div class="profile"><span>🔔</span><div class="avatar">P</div></div></header>
+
+<section id="home" class="page active">
+  <div class="hero">
+    <span class="status-pill">● SAFE TO TRAVEL</span>
+    <h2>Kedarnath Yatra</h2>
+    <p>One place for trusted local services, heritage stories, weather risk, altitude awareness and crowd intelligence.</p>
+    <button class="btn light" onclick="showPage('planner')">Plan a safer yatra →</button>
+  </div>
+  <div class="grid four">
+    <div class="card metric"><div class="icon">🌦️</div><h3>18°C</h3><span class="muted">Weather · <b class="good">Good</b></span></div>
+    <div class="card metric"><div class="icon">👥</div><h3>62%</h3><span class="muted">Crowd · <b class="warn">Moderate</b></span></div>
+    <div class="card metric"><div class="icon">🏔️</div><h3>3,583 m</h3><span class="muted">Altitude · <b class="warn">Caution</b></span></div>
+    <div class="card metric"><div class="icon">🚧</div><h3>Open</h3><span class="muted">Main route · <b class="good">Clear</b></span></div>
+  </div>
+  <div class="grid two">
+    <div>
+      <div class="section-title"><h3>⚠️ Live safety alert</h3><button class="btn light" onclick="showPage('safety')">Details</button></div>
+      <div class="card alert"><div class="alert-icon">🌧️</div><div><h4>Rain risk increasing after 4 PM</h4><p>Consider starting your descent before 3:30 PM. Carry rain protection and avoid exposed trails.</p></div></div>
+      <div class="section-title"><h3>Quick actions</h3></div>
+      <div class="grid four">
+        <button class="card" onclick="showPage('sos')" style="text-align:left">🆘<br><b>SOS</b></button>
+        <button class="card" onclick="showPage('crowd')" style="text-align:left">🗺️<br><b>Routes</b></button>
+        <button class="card" onclick="showPage('guides')" style="text-align:left">👨‍🏫<br><b>Guides</b></button>
+        <button class="card" onclick="showPage('health')" style="text-align:left">🏥<br><b>Medical</b></button>
+      </div>
+    </div>
+    <div>
+      <div class="section-title"><h3>✓ Trusted nearby</h3><button class="btn light" onclick="showPage('guides')">View all</button></div>
+      <div class="card">
+        <div class="guide"><div class="guide-photo">👨‍🏫</div><div><b>Rajesh Rawat</b> <span class="badge">✓ VERIFIED</span><div class="muted">Certified local guide</div><div class="stars">★★★★★ <span class="muted">4.8 · 126 trips</span></div></div></div>
+        <hr style="border:0;border-top:1px solid #edf1ef;margin:16px 0">
+        <div class="guide"><div class="guide-photo">🚑</div><div><b>Medical Camp</b><span class="badge">OPEN</span><div class="muted">800 m · First aid & altitude support</div></div></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="safety" class="page">
+  <div class="grid four">
+    <div class="card"><span class="muted">Overall risk</span><h2 class="good">LOW</h2><span class="status-pill">● Safe to travel</span></div>
+    <div class="card"><span class="muted">Weather</span><h2>18°C</h2><b class="good">Good</b></div>
+    <div class="card"><span class="muted">Crowd density</span><h2>62%</h2><b class="warn">Moderate</b></div>
+    <div class="card"><span class="muted">Route</span><h2>Open</h2><b class="good">Clear</b></div>
+  </div>
+  <div class="section-title"><h3>Risk timeline · Next 6 hours</h3></div>
+  <div class="card">
+    <div class="grid four">
+      <div><b>12 PM</b><p class="good">● Low</p></div><div><b>2 PM</b><p class="good">● Low</p></div><div><b>4 PM</b><p class="warn">● Moderate</p></div><div><b>6 PM</b><p class="danger">● High</p></div>
+    </div>
+    <div class="progress"><span style="width:63%"></span></div>
+    <p class="muted">Rain probability is expected to rise through the afternoon.</p>
+  </div>
+  <div class="section-title"><h3>Recommended actions</h3></div>
+  <div class="grid three"><div class="card">🌧️ <b>Weather</b><p class="muted">Carry rain protection and avoid exposed trails after 4 PM.</p></div><div class="card">💧 <b>Hydration</b><p class="muted">Drink water regularly and take breaks at designated rest points.</p></div><div class="card">👥 <b>Crowd</b><p class="muted">Use the alternate route when the temple zone crosses 75% density.</p></div></div>
+</section>
+
+<section id="crowd" class="page">
+  <div class="grid two">
+    <div class="card">
+      <div class="section-title" style="margin-top:0"><h3>🗺️ Live crowd map</h3><span class="muted">Updated just now</span></div>
+      <div class="map">
+        <div class="pin" style="left:68%;top:26%"></div><div class="map-label" style="left:61%;top:15%">Temple · 🔴 High</div>
+        <div class="pin" style="left:45%;top:55%;background:#d99b25"></div><div class="map-label" style="left:37%;top:63%">Linchauli · 🟡</div>
+        <div class="pin" style="left:22%;top:76%;background:#2b8b64"></div><div class="map-label" style="left:14%;top:82%">Base Camp · 🟢</div>
+      </div>
+      <p class="muted">🟢 Low &nbsp; 🟡 Moderate &nbsp; 🔴 High</p>
+    </div>
+    <div class="card">
+      <span class="muted">Kedarnath Temple Zone</span><h2 class="danger">Very High</h2>
+      <div class="kpi"><span>Estimated wait</span><b>47 min</b></div>
+      <hr style="border:0;border-top:1px solid #edf1ef;margin:15px 0">
+      <span class="muted">Alternative route</span><h3 class="good">28 min</h3>
+      <p class="muted">Taking the alternative route can reduce waiting and crowd exposure.</p>
+      <button class="btn" onclick="toast('Alternative route selected')">Take alternative route</button>
+    </div>
+  </div>
+  <div class="section-title"><h3>Route status</h3></div>
+  <div class="card"><div class="route"><span class="dot"></span><b>Gaurikund</b><span class="line"></span><span class="dot"></span><b>Linchauli</b><span class="line"></span><span class="dot"></span><b>Kedarnath</b></div><span class="status-pill">● Main route open</span></div>
+</section>
+
+<section id="guides" class="page">
+  <div class="hero"><small>TRUSTED SERVICES</small><h2>Find verified local help.</h2><p>Discover guides and essential services with visible verification, experience and reviews.</p></div>
+  <div class="section-title"><h3>Verified guides</h3><span class="muted">12 available today</span></div>
+  <div class="grid three">
+    <div class="card guide"><div class="guide-photo">👨‍🏫</div><div><b>Rajesh Rawat</b> <span class="badge">✓ VERIFIED</span><p class="muted">Garhwali · Hindi · English</p><div class="stars">★★★★★ <span class="muted">4.8 · 126 trips</span></div><p><b>₹800</b> / day</p><button class="btn" onclick="toast('Guide booking request simulated')">Book guide</button></div></div>
+    <div class="card guide"><div class="guide-photo">👩‍🏫</div><div><b>Anita Negi</b> <span class="badge">✓ VERIFIED</span><p class="muted">Hindi · English · Garhwali</p><div class="stars">★★★★★ <span class="muted">4.9 · 98 trips</span></div><p><b>₹900</b> / day</p><button class="btn" onclick="toast('Guide booking request simulated')">Book guide</button></div></div>
+    <div class="card guide"><div class="guide-photo">👨‍🏫</div><div><b>Dev Singh</b> <span class="badge">✓ VERIFIED</span><p class="muted">Hindi · English</p><div class="stars">★★★★☆ <span class="muted">4.7 · 74 trips</span></div><p><b>₹750</b> / day</p><button class="btn" onclick="toast('Guide booking request simulated')">Book guide</button></div></div>
+  </div>
+</section>
+
+<section id="heritage" class="page">
+  <div class="hero"><small>DIGITAL HERITAGE</small><h2>Experience the story behind the journey.</h2><p>Short, accessible stories help pilgrims connect with local history, mythology, architecture and traditions.</p></div>
+  <div class="section-title"><h3>Featured heritage</h3></div>
+  <div class="grid three">
+    <div class="card"><div style="font-size:42px">🛕</div><h3>Kedarnath Temple</h3><p class="muted">History · Architecture · Spiritual traditions</p><button class="btn" onclick="toast('5-minute story started ▶')">▶ 5-min story</button></div>
+    <div class="card"><div style="font-size:42px">🏔️</div><h3>Himalayan Trails</h3><p class="muted">Local routes · Landscapes · Oral traditions</p><button class="btn light" onclick="toast('Heritage story opened')">Explore story</button></div>
+    <div class="card"><div style="font-size:42px">🎵</div><h3>Local Culture</h3><p class="muted">Music · Food · Festivals · Community</p><button class="btn light" onclick="toast('Local culture guide opened')">Explore culture</button></div>
+  </div>
+  <div class="card" style="margin-top:16px"><h3>Did you know?</h3><p>The Himalayan pilgrimage experience includes architecture, oral histories, local traditions and landscapes—not only the destination itself.</p></div>
+</section>
+
+<section id="health" class="page">
+  <div class="grid two">
+    <div class="card">
+      <div class="health-score"><div class="circle"><b>78</b></div><div><span class="muted">Altitude health score</span><h2 class="good">Moderate caution</h2><p class="muted">Current altitude: 3,583 m</p></div></div>
+      <hr style="border:0;border-top:1px solid #edf1ef;margin:20px 0">
+      <h3>Symptoms check</h3>
+      <label><input type="checkbox"> Headache</label><br><label><input type="checkbox"> Dizziness</label><br><label><input type="checkbox"> Nausea</label><br><label><input type="checkbox"> Shortness of breath</label><br><label><input type="checkbox"> Extreme fatigue</label>
+      <br><button class="btn" onclick="toast('Risk assessment simulated')">Check my risk</button>
+    </div>
+    <div class="card">
+      <h3>🏥 Nearby support</h3>
+      <div class="kpi"><span>Medical camp</span><b>800 m</b></div><p class="muted">First aid and altitude support</p>
+      <div class="kpi"><span>Safe shelter</span><b>1.1 km</b></div><p class="muted">Designated rest location</p>
+      <div class="kpi"><span>Hydration</span><b>72%</b></div><div class="progress"><span style="width:72%"></span></div>
+      <p class="muted">Prototype guidance only; seek qualified medical help for concerning symptoms.</p>
+    </div>
+  </div>
+</section>
+
+<section id="sos" class="page">
+  <div class="grid two">
+    <div class="card sos"><div><div style="font-size:13px;color:var(--muted);font-weight:700">EMERGENCY SOS</div><button class="sos-button" onclick="sos()">SOS</button><p class="muted">Press to simulate sending your location to emergency responders.</p></div></div>
+    <div class="card"><h3>Emergency services</h3><p>🚑 Medical response</p><p>👮 Police assistance</p><p>🚁 Mountain rescue</p><hr style="border:0;border-top:1px solid #edf1ef"><h3>Your location</h3><p class="muted">Kedarnath Trail · 1.4 km from Temple</p><h3>Safe zones</h3><p>🏥 Medical Camp · 800 m</p><p>🛖 Shelter · 1.1 km</p></div>
+  </div>
+</section>
+
+<section id="admin" class="page">
+  <div class="hero"><small>AUTHORITY COMMAND CENTER</small><h2>See risk before it becomes an incident.</h2><p>Monitor pilgrim footfall, crowd density, weather alerts, routes and emergency incidents from one dashboard.</p></div>
+  <div class="grid four" style="margin-top:16px">
+    <div class="card"><span class="muted">Pilgrims today</span><h2>24,832</h2><b class="good">↑ 12%</b></div>
+    <div class="card"><span class="muted">Peak crowd</span><h2>68%</h2><b class="warn">Moderate</b></div>
+    <div class="card"><span class="muted">Active alerts</span><h2>3</h2><b class="danger">Needs attention</b></div>
+    <div class="card"><span class="muted">Incidents</span><h2>7</h2><b>Today</b></div>
+  </div>
+  <div class="section-title"><h3>Live incidents & alerts</h3></div>
+  <div class="card"><table class="table"><thead><tr><th>Location</th><th>Type</th><th>Severity</th><th>Status</th></tr></thead><tbody>
+  <tr><td>Temple Zone</td><td>Crowd density</td><td class="danger">High</td><td>Monitoring</td></tr>
+  <tr><td>Linchauli</td><td>Weather warning</td><td class="warn">Moderate</td><td>Active</td></tr>
+  <tr><td>Trail 4</td><td>Medical assistance</td><td class="warn">Moderate</td><td>Responding</td></tr>
+  <tr><td>Gaurikund</td><td>Traffic</td><td class="good">Low</td><td>Normal</td></tr>
+  </tbody></table></div>
+</section>
+
+<section id="planner" class="page">
+  <div class="hero"><small>SMART YATRA PLANNER</small><h2>Build a safer route.</h2><p>Combine crowd, weather and heritage preferences to create a recommended itinerary.</p></div>
+  <div class="card" style="margin-top:16px"><div class="grid three">
+    <label>Destination<br><select id="dest" style="width:100%;padding:12px;border:1px solid var(--border);border-radius:10px;margin-top:7px"><option>Kedarnath</option><option>Badrinath</option><option>Gangotri</option></select></label>
+    <label>Starting point<br><select style="width:100%;padding:12px;border:1px solid var(--border);border-radius:10px;margin-top:7px"><option>Rishikesh</option><option>Haridwar</option><option>Dehradun</option></select></label>
+    <label>Travel date<br><input type="date" style="width:100%;padding:11px;border:1px solid var(--border);border-radius:10px;margin-top:7px"></label>
+  </div>
+  <div style="margin-top:18px"><label><input type="checkbox" checked> Avoid crowded routes</label><br><label><input type="checkbox" checked> Avoid high weather risk</label><br><label><input type="checkbox" checked> Include heritage stops</label></div>
+  <button class="btn" style="margin-top:18px" onclick="toast('Safe Yatra generated successfully')">Generate safe yatra</button></div>
+  <div class="card" style="margin-top:16px"><h3>Recommended Yatra</h3><div class="route"><span class="dot"></span>Rishikesh<span class="line"></span><span class="dot"></span>Guptkashi<span class="line"></span><span class="dot"></span>Kedarnath</div><h2 class="good">Safety Score · 87/100</h2><p class="muted">Crowd 🟢 &nbsp; Weather 🟢 &nbsp; Health 🟡</p></div>
+</section>
+</main>
+</div>
+<div class="mobile-nav">
+<button onclick="showPage('home')">🏠<br>Home</button><button onclick="showPage('safety')">🛡️<br>Safety</button><button onclick="showPage('crowd')">🗺️<br>Map</button><button onclick="showPage('guides')">✓<br>Guides</button><button onclick="showPage('sos')">🆘<br>SOS</button>
+</div>
+<div class="toast" id="toast"></div>
+<script>
+function showPage(id,btn){
+ document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
+ const page=document.getElementById(id); if(!page)return;
+ page.classList.add('active');
+ document.querySelectorAll('.nav button').forEach(b=>b.classList.remove('active'));
+ if(btn)btn.classList.add('active');
+ const names={home:'Overview',safety:'Live Safety',crowd:'Crowd & Routes',guides:'Verified Guides',heritage:'Heritage Explorer',health:'Health & Altitude',sos:'Emergency SOS',admin:'Authority Dashboard',planner:'Smart Yatra Planner'};
+ document.getElementById('pageName').textContent=names[id]||id;
+ document.getElementById('title').textContent=id==='home'?'Good morning, Pilgrim 🙏':names[id];
+ window.scrollTo({top:0,behavior:'smooth'});
+}
+function toast(msg){const t=document.getElementById('toast');t.textContent=msg;t.style.display='block';clearTimeout(window.tt);window.tt=setTimeout(()=>t.style.display='none',2500)}
+function sos(){toast('🆘 SOS simulated — emergency team notified with your location')}
+setInterval(()=>{const el=document.querySelector('#home .metric:nth-child(2) h3');if(el)el.textContent=(58+Math.floor(Math.random()*12))+'%'},5000);
+</script>
+</body>
+</html>
