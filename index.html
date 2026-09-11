@@ -1,0 +1,4142 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>YatraSuraksha — Smart Pilgrimage Safety</title>
+<style>
+:root{
+  --green:#164b3b;
+  --green2:#22634e;
+  --mint:#e8f4ee;
+  --cream:#f7f5ef;
+  --orange:#e4863d;
+  --red:#d9534f;
+  --yellow:#d99b25;
+  --blue:#3f7891;
+  --text:#18312a;
+  --muted:#6f7f79;
+  --white:#fff;
+  --border:#dce6e0;
+  --shadow:0 14px 40px rgba(21,52,42,.10);
+}
+
+*{box-sizing:border-box}
+
+body{
+  margin:0;
+  font-family:Inter,ui-sans-serif,system-ui,-apple-system,Segoe UI,sans-serif;
+  background:var(--cream);
+  color:var(--text)
+}
+
+button{
+  font:inherit;
+  cursor:pointer;
+  border:0
+}
+
+.app{
+  display:flex;
+  min-height:100vh
+}
+
+.sidebar{
+  width:245px;
+  background:var(--green);
+  color:#fff;
+  padding:25px 17px;
+  position:fixed;
+  inset:0 auto 0 0;
+  z-index:5
+}
+
+.logo{
+  display:flex;
+  align-items:center;
+  gap:11px;
+  padding:5px 9px 28px;
+  font-weight:800;
+  font-size:20px
+}
+
+.logo-mark{
+  width:38px;
+  height:38px;
+  border-radius:12px;
+  background:#e9b66e;
+  display:grid;
+  place-items:center;
+  color:var(--green);
+  font-size:20px
+}
+
+.nav{
+  display:grid;
+  gap:7px
+}
+
+.nav button{
+  background:transparent;
+  color:#d9e9e2;
+  text-align:left;
+  padding:12px 13px;
+  border-radius:12px;
+  display:flex;
+  gap:12px;
+  align-items:center
+}
+
+.nav button:hover,
+.nav button.active{
+  background:rgba(255,255,255,.12);
+  color:#fff
+}
+
+.side-bottom{
+  position:absolute;
+  bottom:24px;
+  left:17px;
+  right:17px;
+  background:rgba(255,255,255,.08);
+  padding:15px;
+  border-radius:15px;
+  font-size:12px;
+  color:#d5e6df
+}
+
+.main{
+  margin-left:245px;
+  width:calc(100% - 245px);
+  padding:22px 28px 40px
+}
+
+.topbar{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  margin-bottom:20px
+}
+
+.crumb{
+  font-size:13px;
+  color:var(--muted)
+}
+
+h1{
+  margin:3px 0 0;
+  font-size:28px
+}
+
+.profile{
+  display:flex;
+  align-items:center;
+  gap:10px
+}
+
+.avatar{
+  width:40px;
+  height:40px;
+  border-radius:50%;
+  background:#dceee6;
+  display:grid;
+  place-items:center;
+  font-weight:800
+}
+
+.page{
+  display:none
+}
+
+.page.active{
+  display:block
+}
+
+.hero{
+  border-radius:25px;
+  padding:28px;
+  color:#fff;
+  background:linear-gradient(125deg,#174d3c,#2e7459 58%,#3f7961);
+  box-shadow:var(--shadow);
+  position:relative;
+  overflow:hidden
+}
+
+.hero:after{
+  content:"";
+  position:absolute;
+  width:310px;
+  height:310px;
+  border:55px solid rgba(255,255,255,.06);
+  border-radius:50%;
+  right:-80px;
+  top:-120px
+}
+
+.hero small{
+  opacity:.78
+}
+
+.hero h2{
+  font-size:34px;
+  max-width:600px;
+  margin:8px 0
+}
+
+.hero p{
+  max-width:650px;
+  color:#dcebe5
+}
+
+.status-pill{
+  display:inline-flex;
+  align-items:center;
+  gap:7px;
+  background:#dff4e8;
+  color:#17553e;
+  border-radius:99px;
+  padding:7px 12px;
+  font-weight:700;
+  font-size:12px
+}
+
+.grid{
+  display:grid;
+  gap:16px
+}
+
+.four{
+  grid-template-columns:repeat(4,1fr)
+}
+
+.three{
+  grid-template-columns:repeat(3,1fr)
+}
+
+.two{
+  grid-template-columns:1.35fr 1fr
+}
+
+.card{
+  background:#fff;
+  border:1px solid var(--border);
+  border-radius:18px;
+  padding:18px;
+  box-shadow:0 7px 24px rgba(21,52,42,.05)
+}
+
+.metric{
+  margin-top:16px
+}
+
+.metric .icon{
+  font-size:23px
+}
+
+.metric h3{
+  font-size:26px;
+  margin:7px 0 2px
+}
+
+.muted{
+  color:var(--muted);
+  font-size:13px
+}
+
+.good{
+  color:#258052
+}
+
+.warn{
+  color:#ad7711
+}
+
+.danger{
+  color:#c74743
+}
+
+.section-title{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  margin:25px 0 12px
+}
+
+.section-title h3{
+  margin:0;
+  font-size:17px
+}
+
+.btn{
+  background:var(--green);
+  color:#fff;
+  padding:10px 15px;
+  border-radius:11px;
+  font-weight:700
+}
+
+.btn.light{
+  background:var(--mint);
+  color:var(--green)
+}
+
+.btn.red{
+  background:var(--red)
+}
+
+.alert{
+  display:flex;
+  gap:13px;
+  align-items:flex-start
+}
+
+.alert-icon{
+  width:40px;
+  height:40px;
+  border-radius:12px;
+  display:grid;
+  place-items:center;
+  background:#fff0df
+}
+
+.alert h4{
+  margin:0 0 4px
+}
+
+.alert p{
+  margin:0;
+  font-size:13px;
+  color:var(--muted)
+}
+
+.guide{
+  display:flex;
+  gap:13px
+}
+
+.guide-photo{
+  width:52px;
+  height:52px;
+  border-radius:14px;
+  background:#dceee6;
+  display:grid;
+  place-items:center;
+  font-size:23px
+}
+
+.badge{
+  font-size:11px;
+  background:#e4f5ea;
+  color:#24764d;
+  padding:4px 7px;
+  border-radius:8px;
+  font-weight:800
+}
+
+.stars{
+  color:#dc9728
+}
+
+.route{
+  display:flex;
+  gap:8px;
+  align-items:center;
+  margin:15px 0
+}
+
+.dot{
+  width:11px;
+  height:11px;
+  border-radius:50%;
+  background:#2b8b64
+}
+
+.line{
+  height:2px;
+  background:#c9ddd4;
+  flex:1
+}
+
+.progress{
+  height:9px;
+  background:#e9efec;
+  border-radius:10px;
+  overflow:hidden
+}
+
+.progress span{
+  display:block;
+  height:100%;
+  background:var(--green2);
+  border-radius:10px
+}
+
+.map{
+  height:320px;
+  border-radius:18px;
+  background:linear-gradient(140deg,#dcefe6,#eef4e9);
+  position:relative;
+  overflow:hidden
+}
+
+.map:before,
+.map:after{
+  content:"";
+  position:absolute;
+  background:#c7dfd5;
+  transform:rotate(-18deg);
+  height:15px;
+  width:130%;
+  left:-10%;
+  top:45%
+}
+
+.map:after{
+  transform:rotate(22deg);
+  top:62%;
+  background:#d6e8d8
+}
+
+.pin{
+  position:absolute;
+  width:18px;
+  height:18px;
+  border:4px solid #fff;
+  border-radius:50%;
+  background:var(--red);
+  box-shadow:0 5px 15px #0002;
+  z-index:2
+}
+
+.map-label{
+  position:absolute;
+  z-index:3;
+  background:#fff;
+  padding:7px 9px;
+  border-radius:9px;
+  font-size:11px;
+  box-shadow:0 5px 15px #0001
+}
+
+.health-score{
+  display:flex;
+  align-items:center;
+  gap:22px
+}
+
+.circle{
+  width:105px;
+  height:105px;
+  border-radius:50%;
+  display:grid;
+  place-items:center;
+  background:conic-gradient(#2d8a66 0 78%,#e7eee9 78%);
+  position:relative
+}
+
+.circle:after{
+  content:"";
+  position:absolute;
+  width:78px;
+  height:78px;
+  background:#fff;
+  border-radius:50%
+}
+
+.circle b{
+  z-index:2;
+  font-size:24px
+}
+
+.table{
+  width:100%;
+  border-collapse:collapse
+}
+
+.table th,
+.table td{
+  text-align:left;
+  padding:12px;
+  border-bottom:1px solid #edf1ef;
+  font-size:13px
+}
+
+.table th{
+  color:var(--muted);
+  font-weight:600
+}
+
+.kpi{
+  display:flex;
+  justify-content:space-between;
+  align-items:center
+}
+
+.kpi b{
+  font-size:24px
+}
+
+.sos{
+  min-height:270px;
+  display:grid;
+  place-items:center;
+  text-align:center
+}
+
+.sos-button{
+  width:150px;
+  height:150px;
+  border-radius:50%;
+  background:#d9534f;
+  color:white;
+  font-size:25px;
+  font-weight:900;
+  box-shadow:0 0 0 14px #fde6e5,0 18px 35px #d9534f55
+}
+
+.sos-button:active{
+  transform:scale(.97)
+}
+
+.toast{
+  position:fixed;
+  right:25px;
+  bottom:25px;
+  background:#173f32;
+  color:#fff;
+  padding:14px 17px;
+  border-radius:13px;
+  display:none;
+  z-index:60;
+  box-shadow:var(--shadow)
+}
+
+/* QR Scanner */
+
+.modal-backdrop{
+  position:fixed;
+  inset:0;
+  background:rgba(9,22,18,.78);
+  display:none;
+  align-items:center;
+  justify-content:center;
+  padding:18px;
+  z-index:50;
+  backdrop-filter:blur(5px)
+}
+
+.modal-backdrop.open{
+  display:flex
+}
+
+.qr-modal{
+  width:min(520px,100%);
+  background:#10251e;
+  color:#fff;
+  border-radius:24px;
+  overflow:hidden;
+  box-shadow:0 24px 70px rgba(0,0,0,.35);
+  position:relative
+}
+
+.qr-camera{
+  min-height:590px;
+  display:flex;
+  flex-direction:column;
+  justify-content:space-between;
+  padding:22px;
+  background:
+    radial-gradient(circle at 50% 42%,rgba(67,120,91,.22),transparent 35%),
+    linear-gradient(145deg,#091713,#18372c 55%,#0b1713);
+  position:relative;
+  overflow:hidden
+}
+
+.modal-top{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  position:relative;
+  z-index:2
+}
+
+.modal-top h3{
+  margin:0
+}
+
+.icon-btn{
+  width:42px;
+  height:42px;
+  border-radius:50%;
+  background:rgba(255,255,255,.12);
+  color:#fff;
+  display:grid;
+  place-items:center;
+  font-size:20px
+}
+
+.scanner-area{
+  position:relative;
+  width:min(310px,72vw);
+  aspect-ratio:1;
+  margin:auto;
+  display:grid;
+  place-items:center
+}
+
+.scanner-area:before{
+  content:"";
+  position:absolute;
+  inset:0;
+  border:2px solid rgba(255,255,255,.12);
+  border-radius:18px
+}
+
+.corner{
+  position:absolute;
+  width:46px;
+  height:46px;
+  border-color:#e4863d;
+  border-style:solid;
+  filter:drop-shadow(0 0 8px rgba(228,134,61,.45))
+}
+
+.c1{
+  top:0;
+  left:0;
+  border-width:5px 0 0 5px;
+  border-radius:12px 0 0 0
+}
+
+.c2{
+  top:0;
+  right:0;
+  border-width:5px 5px 0 0;
+  border-radius:0 12px 0 0
+}
+
+.c3{
+  bottom:0;
+  left:0;
+  border-width:0 0 5px 5px;
+  border-radius:0 0 0 12px
+}
+
+.c4{
+  bottom:0;
+  right:0;
+  border-width:0 5px 5px 0;
+  border-radius:0 0 12px 0
+}
+
+.scan-line{
+  position:absolute;
+  left:14px;
+  right:14px;
+  top:18%;
+  height:3px;
+  background:#e4863d;
+  box-shadow:0 0 14px #e4863d;
+  animation:scan 2.2s ease-in-out infinite
+}
+
+@keyframes scan{
+  0%,100%{top:16%}
+  50%{top:82%}
+}
+
+.qr-placeholder{
+  width:132px;
+  height:132px;
+  background:repeating-linear-gradient(45deg,#fff 0 7px,#222 7px 14px);
+  border:12px solid #fff;
+  box-shadow:0 0 0 8px rgba(255,255,255,.12);
+  opacity:.9
+}
+
+.scan-copy{
+  text-align:center;
+  position:relative;
+  z-index:2
+}
+
+.scan-copy h3{
+  margin:0 0 7px
+}
+
+.scan-copy p{
+  margin:0;
+  color:#c9d9d3;
+  font-size:13px
+}
+
+.scanner-controls{
+  display:flex;
+  justify-content:center;
+  gap:12px;
+  position:relative;
+  z-index:2
+}
+
+.scanner-actions{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  position:relative;
+  z-index:2
+}
+
+.scanner-actions .btn{
+  background:rgba(255,255,255,.12)
+}
+
+.scanner-actions .btn.light{
+  background:var(--mint);
+  color:var(--green)
+}
+
+/* AR Heritage */
+
+.ar-section{
+  margin-top:18px
+}
+
+.ar-view{
+  min-height:620px;
+  border-radius:24px;
+  overflow:hidden;
+  position:relative;
+  background:
+    linear-gradient(180deg,rgba(12,45,35,.15),rgba(10,27,22,.75)),
+    url('https://images.unsplash.com/photo-1605649487212-47bdab064df7?auto=format&fit=crop&w=1400&q=80')
+    center/cover;
+  box-shadow:var(--shadow);
+  color:#fff;
+  padding:20px;
+  display:flex;
+  flex-direction:column;
+  justify-content:space-between
+}
+
+.ar-view:after{
+  content:"";
+  position:absolute;
+  inset:0;
+  background:linear-gradient(180deg,rgba(0,0,0,.08),transparent 40%,rgba(0,0,0,.55));
+  pointer-events:none
+}
+
+.ar-top,
+.ar-middle,
+.ar-bottom{
+  position:relative;
+  z-index:2
+}
+
+.ar-top{
+  display:flex;
+  justify-content:space-between;
+  gap:10px;
+  align-items:center
+}
+
+.ar-pill{
+  display:inline-flex;
+  gap:7px;
+  align-items:center;
+  background:rgba(14,39,30,.7);
+  border:1px solid rgba(255,255,255,.2);
+  padding:8px 11px;
+  border-radius:999px;
+  font-size:12px;
+  font-weight:800
+}
+
+.ar-dot{
+  width:8px;
+  height:8px;
+  border-radius:50%;
+  background:#55c987;
+  box-shadow:0 0 10px #55c987
+}
+
+.ar-frame{
+  position:absolute;
+  inset:14% 9%;
+  border:1px solid rgba(255,255,255,.2);
+  border-radius:20px
+}
+
+.ar-corner{
+  position:absolute;
+  width:48px;
+  height:48px;
+  border-color:#fff;
+  border-style:solid
+}
+
+.at1{
+  top:0;
+  left:0;
+  border-width:4px 0 0 4px
+}
+
+.at2{
+  top:0;
+  right:0;
+  border-width:4px 4px 0 0
+}
+
+.at3{
+  bottom:0;
+  left:0;
+  border-width:0 0 4px 4px
+}
+
+.at4{
+  bottom:0;
+  right:0;
+  border-width:0 4px 4px 0
+}
+
+.landmark-pin{
+  position:absolute;
+  left:50%;
+  top:44%;
+  transform:translate(-50%,-50%);
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  gap:7px
+}
+
+.landmark-marker{
+  width:54px;
+  height:54px;
+  border:2px solid #55c987;
+  border-radius:50%;
+  display:grid;
+  place-items:center;
+  background:rgba(20,68,50,.55);
+  box-shadow:0 0 0 9px rgba(85,201,135,.13),0 0 30px rgba(85,201,135,.35);
+  font-size:24px
+}
+
+.landmark-label{
+  background:#fff;
+  color:var(--green);
+  padding:7px 10px;
+  border-radius:9px;
+  font-size:11px;
+  font-weight:800
+}
+
+.ar-info{
+  width:min(390px,100%);
+  background:rgba(255,255,255,.96);
+  color:var(--text);
+  border-radius:18px;
+  padding:17px;
+  box-shadow:0 15px 35px rgba(0,0,0,.2)
+}
+
+.ar-info h3{
+  margin:0 0 4px
+}
+
+.ar-info p{
+  margin:0 0 12px;
+  color:var(--muted);
+  font-size:12px
+}
+
+.facts{
+  margin:0 0 14px;
+  padding-left:18px;
+  font-size:12px;
+  line-height:1.8
+}
+
+.ar-actions{
+  display:flex;
+  gap:9px;
+  flex-wrap:wrap
+}
+
+.ar-actions .btn{
+  flex:1;
+  min-width:125px
+}
+
+.ar-bottom{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  gap:10px
+}
+
+.ar-controls{
+  display:flex;
+  gap:8px
+}
+
+.ar-controls .icon-btn{
+  background:rgba(12,34,27,.72)
+}
+
+/* Emergency */
+
+.emergency-grid{
+  margin-top:16px
+}
+
+.emergency-card{
+  border:1px solid #f1d5d3;
+  background:linear-gradient(145deg,#fff,#fff7f7);
+  position:relative;
+  overflow:hidden
+}
+
+.emergency-card:before{
+  content:"";
+  position:absolute;
+  left:0;
+  top:0;
+  bottom:0;
+  width:5px;
+  background:var(--red)
+}
+
+.emergency-icon{
+  width:52px;
+  height:52px;
+  border-radius:15px;
+  background:#fff0ef;
+  display:grid;
+  place-items:center;
+  font-size:28px;
+  margin-bottom:12px
+}
+
+.emergency-card h3{
+  margin:0 0 5px
+}
+
+.emergency-card p{
+  margin:0 0 15px;
+  color:var(--muted);
+  font-size:13px
+}
+
+.emergency-card .btn{
+  width:100%;
+  background:var(--red)
+}
+
+.choice-grid{
+  display:grid;
+  gap:10px;
+  margin:18px 0
+}
+
+.choice{
+  padding:15px;
+  border:2px solid var(--border);
+  border-radius:14px;
+  background:#fff;
+  text-align:left;
+  display:flex;
+  gap:12px;
+  align-items:center
+}
+
+.choice.selected{
+  border-color:var(--red);
+  background:#fff4f3
+}
+
+.choice-icon{
+  font-size:25px
+}
+
+.modal-card{
+  width:min(520px,100%);
+  background:#fff;
+  border-radius:22px;
+  padding:24px;
+  box-shadow:0 24px 70px rgba(0,0,0,.3)
+}
+
+.modal-card h2{
+  margin:0 0 7px
+}
+
+.modal-actions{
+  display:flex;
+  gap:10px
+}
+
+.modal-actions .btn{
+  flex:1
+}
+
+.success-box{
+  text-align:center
+}
+
+.success-icon{
+  width:72px;
+  height:72px;
+  border-radius:50%;
+  background:#e4f6ea;
+  color:#238052;
+  display:grid;
+  place-items:center;
+  font-size:38px;
+  margin:0 auto 14px
+}
+
+.success-meta{
+  background:#f6faf7;
+  border-radius:15px;
+  padding:14px;
+  text-align:left;
+  margin:18px 0
+}
+
+.success-meta div{
+  display:flex;
+  justify-content:space-between;
+  gap:15px;
+  padding:8px 0;
+  border-bottom:1px solid #e4ece7;
+  font-size:13px
+}
+
+.success-meta div:last-child{
+  border-bottom:0
+}
+
+.ref{
+  font-weight:800;
+  color:var(--green)
+}
+
+/* Smart Safety Map */
+
+.safety-status{
+  display:flex;
+  align-items:center;
+  gap:18px;
+  padding:18px 20px;
+  background:#e8f5ec;
+  border:1px solid #c9e5d3;
+  border-radius:18px;
+  margin:16px 0
+}
+
+.risk-light{
+  width:56px;
+  height:56px;
+  border-radius:50%;
+  background:#2b8b64;
+  box-shadow:0 0 0 9px #d4eddd;
+  display:grid;
+  place-items:center;
+  color:#fff;
+  font-size:27px
+}
+
+.safety-map-wrap{
+  display:grid;
+  grid-template-columns:1.5fr .8fr;
+  gap:16px
+}
+
+.smart-map{
+  height:500px;
+  border-radius:20px;
+  position:relative;
+  overflow:hidden;
+  background:linear-gradient(145deg,#dceee5,#edf3e8);
+  border:1px solid var(--border)
+}
+
+.zone{
+  position:absolute;
+  border-radius:50%;
+  opacity:.7;
+  border:2px solid rgba(255,255,255,.8)
+}
+
+.zone.green{
+  background:rgba(43,139,100,.32)
+}
+
+.zone.yellow{
+  background:rgba(217,155,37,.35)
+}
+
+.zone.red{
+  background:rgba(217,83,79,.38)
+}
+
+.map-road{
+  position:absolute;
+  height:11px;
+  background:#fff;
+  box-shadow:0 1px 4px #0001;
+  border-radius:20px;
+  transform:rotate(-25deg);
+  width:115%;
+  left:-5%;
+  top:48%
+}
+
+.map-road.r2{
+  transform:rotate(31deg);
+  top:63%
+}
+
+.map-road.r3{
+  transform:rotate(4deg);
+  top:32%;
+  height:8px
+}
+
+.map-route{
+  position:absolute;
+  left:15%;
+  top:75%;
+  width:65%;
+  height:5px;
+  background:#238052;
+  transform:rotate(-22deg);
+  z-index:3
+}
+
+.map-marker{
+  position:absolute;
+  z-index:5;
+  transform:translate(-50%,-50%);
+  text-align:center
+}
+
+.map-marker .marker-icon{
+  width:36px;
+  height:36px;
+  border-radius:50%;
+  background:#fff;
+  display:grid;
+  place-items:center;
+  box-shadow:0 6px 16px #0002;
+  border:3px solid #238052;
+  font-size:18px
+}
+
+.map-marker span{
+  display:block;
+  background:#fff;
+  padding:4px 7px;
+  border-radius:7px;
+  font-size:10px;
+  font-weight:800;
+  white-space:nowrap;
+  margin-top:4px;
+  box-shadow:0 3px 10px #0001
+}
+
+.route-card{
+  border:1px solid var(--border);
+  border-radius:15px;
+  padding:15px;
+  background:#fff;
+  margin-bottom:10px;
+  cursor:pointer
+}
+
+.route-card:hover,
+.route-card.selected{
+  border-color:#2b8b64;
+  background:#f1f8f4
+}
+
+.route-card h4{
+  margin:0 0 7px
+}
+
+.route-meta{
+  display:flex;
+  gap:12px;
+  flex-wrap:wrap;
+  font-size:12px
+}
+
+.legend{
+  display:grid;
+  gap:9px
+}
+
+.legend-item{
+  display:flex;
+  align-items:center;
+  gap:9px;
+  font-size:13px
+}
+
+.legend-dot{
+  width:14px;
+  height:14px;
+  border-radius:50%
+}
+
+.legend-dot.green{
+  background:#2b8b64
+}
+
+.legend-dot.yellow{
+  background:#d99b25
+}
+
+.legend-dot.red{
+  background:#d9534f
+}
+
+/* Trusted Services Marketplace */
+
+.service-tabs{
+  display:flex;
+  gap:9px;
+  overflow:auto;
+  padding-bottom:5px
+}
+
+.service-tabs button{
+  background:#fff;
+  border:1px solid var(--border);
+  color:var(--muted);
+  padding:10px 15px;
+  border-radius:999px;
+  white-space:nowrap
+}
+
+.service-tabs button.active{
+  background:var(--green);
+  color:#fff;
+  border-color:var(--green)
+}
+
+.provider-card{
+  position:relative
+}
+
+.provider-cover{
+  height:92px;
+  border-radius:14px;
+  background:linear-gradient(135deg,#d9e9df,#f1e5d5)
+}
+
+.provider-avatar{
+  width:72px;
+  height:72px;
+  border-radius:20px;
+  background:#dceee6;
+  border:5px solid #fff;
+  display:grid;
+  place-items:center;
+  font-size:31px;
+  margin-top:-36px;
+  position:relative
+}
+
+.provider-head{
+  display:flex;
+  justify-content:space-between;
+  gap:10px;
+  align-items:flex-start
+}
+
+.verify-badge{
+  display:inline-flex;
+  align-items:center;
+  gap:5px;
+  background:#e4f6ea;
+  color:#24764d;
+  padding:6px 9px;
+  border-radius:9px;
+  font-size:11px;
+  font-weight:800
+}
+
+.provider-info{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:10px;
+  margin:15px 0
+}
+
+.info-chip{
+  background:#f6f8f6;
+  border-radius:10px;
+  padding:9px;
+  font-size:12px
+}
+
+.profile-btn{
+  width:100%;
+  margin-top:5px
+}
+
+.mobile-nav{
+  display:none
+}
+
+@media(max-width:1050px){
+
+  .four{
+    grid-template-columns:repeat(2,1fr)
+  }
+
+  .two{
+    grid-template-columns:1fr
+  }
+
+  .sidebar{
+    width:210px
+  }
+
+  .main{
+    margin-left:210px;
+    width:calc(100% - 210px)
+  }
+
+}
+
+@media(max-width:900px){
+
+  .safety-map-wrap{
+    grid-template-columns:1fr
+  }
+
+  .smart-map{
+    height:430px
+  }
+
+}
+
+@media(max-width:720px){
+
+  .sidebar{
+    display:none
+  }
+
+  .main{
+    margin:0;
+    padding:17px 15px 80px;
+    width:100%
+  }
+
+  .four,
+  .three{
+    grid-template-columns:1fr
+  }
+
+  .hero h2{
+    font-size:27px
+  }
+
+  .topbar{
+    align-items:flex-start
+  }
+
+  .mobile-nav{
+    display:flex;
+    position:fixed;
+    bottom:0;
+    left:0;
+    right:0;
+    background:#fff;
+    border-top:1px solid var(--border);
+    z-index:10;
+    justify-content:space-around;
+    padding:9px
+  }
+
+  .mobile-nav button{
+    background:transparent;
+    font-size:11px;
+    color:var(--muted)
+  }
+
+  .qr-camera{
+    min-height:calc(100vh - 36px);
+    border-radius:20px
+  }
+
+  .modal-backdrop{
+    padding:10px
+  }
+
+  .ar-view{
+    min-height:720px
+  }
+
+  .ar-frame{
+    inset:12% 5% 39%
+  }
+
+  .provider-info{
+    grid-template-columns:1fr
+  }
+
+  .smart-map{
+    height:440px
+  }
+
+  .modal-card{
+    padding:20px
+  }
+
+  .modal-actions{
+    flex-direction:column
+  }
+
+  .ar-bottom{
+    align-items:flex-end
+  }
+
+}
+</style>
+</head>
+
+<body>
+
+<div class="app">
+
+<aside class="sidebar">
+
+  <div class="logo">
+    <div class="logo-mark">🏔</div>
+    YatraSuraksha
+  </div>
+
+  <nav class="nav">
+
+    <button class="active" onclick="showPage('home',this)">
+      🏠 <span>Overview</span>
+    </button>
+
+    <button onclick="showPage('safety',this)">
+      🛡️ <span>Live Safety</span>
+    </button>
+
+    <button onclick="showPage('crowd',this)">
+      🗺️ <span>Crowd & Routes</span>
+    </button>
+
+    <button onclick="showPage('guides',this)">
+      ✓ <span>Verified Guides</span>
+    </button>
+
+    <button onclick="showPage('verification',this)">
+      ▣ <span>QR Verification</span>
+    </button>
+
+    <button onclick="showPage('heritage',this)">
+      🏛️ <span>Heritage Explorer</span>
+    </button>
+
+    <button onclick="showPage('health',this)">
+      🏔️ <span>Health & Altitude</span>
+    </button>
+
+    <button onclick="showPage('sos',this)">
+      🆘 <span>Emergency SOS</span>
+    </button>
+
+    <button onclick="showPage('admin',this)">
+      📊 <span>Authority Dashboard</span>
+    </button>
+
+  </nav>
+
+  <div class="side-bottom">
+    <b>Demo mode</b><br>
+    Live data is simulated for the SIH prototype.
+  </div>
+
+</aside>
+
+<main class="main">
+
+<header class="topbar">
+
+  <div>
+
+    <div class="crumb">
+      YatraSuraksha / <span id="pageName">Overview</span>
+    </div>
+
+    <h1 id="title">
+      Good morning, Pilgrim 🙏
+    </h1>
+
+  </div>
+
+  <div class="profile">
+    <span>🔔</span>
+    <div class="avatar">P</div>
+  </div>
+
+</header>
+
+<!-- OVERVIEW -->
+
+<section id="home" class="page active">
+
+  <div class="hero">
+
+    <span class="status-pill">
+      ● SAFE TO TRAVEL
+    </span>
+
+    <h2>Kedarnath Yatra</h2>
+
+    <p>
+      One place for trusted local services, heritage stories,
+      weather risk, altitude awareness and crowd intelligence.
+    </p>
+
+    <button class="btn light" onclick="showPage('planner')">
+      Plan a safer yatra →
+    </button>
+
+  </div>
+
+  <div class="grid four">
+
+    <div class="card metric">
+      <div class="icon">🌦️</div>
+      <h3>18°C</h3>
+      <span class="muted">
+        Weather · <b class="good">Good</b>
+      </span>
+    </div>
+
+    <div class="card metric">
+      <div class="icon">👥</div>
+      <h3>62%</h3>
+      <span class="muted">
+        Crowd · <b class="warn">Moderate</b>
+      </span>
+    </div>
+
+    <div class="card metric">
+      <div class="icon">🏔️</div>
+      <h3>3,583 m</h3>
+      <span class="muted">
+        Altitude · <b class="warn">Caution</b>
+      </span>
+    </div>
+
+    <div class="card metric">
+      <div class="icon">🚧</div>
+      <h3>Open</h3>
+      <span class="muted">
+        Main route · <b class="good">Clear</b>
+      </span>
+    </div>
+
+  </div>
+
+  <div class="grid two">
+
+    <div>
+
+      <div class="section-title">
+        <h3>⚠️ Live safety alert</h3>
+        <button class="btn light" onclick="showPage('safety')">
+          Details
+        </button>
+      </div>
+
+      <div class="card alert">
+
+        <div class="alert-icon">
+          🌧️
+        </div>
+
+        <div>
+          <h4>Rain risk increasing after 4 PM</h4>
+
+          <p>
+            Consider starting your descent before 3:30 PM.
+            Carry rain protection and avoid exposed trails.
+          </p>
+        </div>
+
+      </div>
+
+      <div class="section-title">
+        <h3>Quick actions</h3>
+      </div>
+
+      <div class="grid four">
+
+        <button class="card" onclick="showPage('sos')" style="text-align:left">
+          🆘<br><b>SOS</b>
+        </button>
+
+        <button class="card" onclick="showPage('crowd')" style="text-align:left">
+          🗺️<br><b>Routes</b>
+        </button>
+
+        <button class="card" onclick="showPage('guides')" style="text-align:left">
+          👨‍🏫<br><b>Guides</b>
+        </button>
+
+        <button class="card" onclick="showPage('health')" style="text-align:left">
+          🏥<br><b>Medical</b>
+        </button>
+
+      </div>
+
+    </div>
+
+    <div>
+
+      <div class="section-title">
+        <h3>✓ Trusted nearby</h3>
+
+        <button class="btn light" onclick="showPage('guides')">
+          View all
+        </button>
+      </div>
+
+      <div class="card">
+
+        <div class="guide">
+
+          <div class="guide-photo">
+            👨‍🏫
+          </div>
+
+          <div>
+
+            <b>Rajesh Kumar</b>
+
+            <span class="badge">
+              ✓ VERIFIED
+            </span>
+
+            <div class="muted">
+              Certified local guide
+            </div>
+
+            <div class="stars">
+              ★★★★★ 4.8
+            </div>
+
+          </div>
+
+        </div>
+
+      </div>
+
+    </div>
+
+  </div>
+
+</section>
+
+<!-- LIVE SAFETY -->
+
+<section id="safety" class="page">
+
+  <div class="hero">
+
+    <small>LIVE SAFETY</small>
+
+    <h2>Understand today's travel conditions.</h2>
+
+    <p>
+      Mock safety intelligence combines weather, crowd and
+      route conditions to help pilgrims make safer decisions.
+    </p>
+
+  </div>
+
+  <div class="safety-status">
+
+    <div class="risk-light">
+      ●
+    </div>
+
+    <div>
+
+      <div class="muted">
+        YOUR SAFETY STATUS
+      </div>
+
+      <h2 style="margin:3px 0;color:#238052">
+        🟢 LOW RISK
+      </h2>
+
+      <div>
+        Current conditions are suitable for travel.
+      </div>
+
+    </div>
+
+  </div>
+
+  <div class="grid three">
+
+    <div class="card">
+      <span class="muted">Weather</span>
+      <h2 class="good">Good</h2>
+      <p class="muted">18°C · Low rain risk</p>
+    </div>
+
+    <div class="card">
+      <span class="muted">Crowd</span>
+      <h2 class="warn">Moderate</h2>
+      <p class="muted">62% estimated density</p>
+    </div>
+
+    <div class="card">
+      <span class="muted">Route</span>
+      <h2 class="good">Open</h2>
+      <p class="muted">Main trail currently clear</p>
+    </div>
+
+  </div>
+
+  <div class="section-title">
+    <h3>Safety recommendations</h3>
+  </div>
+
+  <div class="grid three">
+
+    <div class="card">
+      🌦️
+      <h3>Weather</h3>
+      <p class="muted">
+        Carry rain protection and monitor afternoon weather changes.
+      </p>
+    </div>
+
+    <div class="card">
+      🥤
+      <h3>Hydration</h3>
+      <p class="muted">
+        Take regular hydration and rest breaks.
+      </p>
+    </div>
+
+    <div class="card">
+      🗺️
+      <h3>Safer Route</h3>
+      <p class="muted">
+        Use the Smart Safety Map to compare route conditions.
+      </p>
+    </div>
+
+  </div>
+
+</section>
+
+<!-- SMART SAFETY MAP -->
+
+<section id="crowd" class="page">
+
+  <div class="hero">
+
+    <small>SMART SAFETY MAP</small>
+
+    <h2>Choose the safer way to travel.</h2>
+
+    <p>
+      Visualize mock crowd and safety zones, nearby support points
+      and recommended routes before beginning your journey.
+    </p>
+
+  </div>
+
+  <div class="safety-status">
+
+    <div class="risk-light">
+      ●
+    </div>
+
+    <div>
+
+      <div class="muted">
+        YOUR SAFETY STATUS
+      </div>
+
+      <h2 style="margin:3px 0;color:#238052">
+        🟢 LOW RISK
+      </h2>
+
+      <div>
+        Current conditions are suitable for travel.
+      </div>
+
+    </div>
+
+  </div>
+
+  <div class="section-title">
+
+    <h3>🗺️ Smart Safety Map</h3>
+
+    <span class="muted">
+      Mock map · Updated just now
+    </span>
+
+  </div>
+
+  <div class="safety-map-wrap">
+
+    <div class="smart-map">
+
+      <div
+        class="zone green"
+        style="width:270px;height:190px;left:2%;top:55%">
+      </div>
+
+      <div
+        class="zone yellow"
+        style="width:260px;height:180px;left:35%;top:36%">
+      </div>
+
+      <div
+        class="zone red"
+        style="width:230px;height:180px;right:4%;top:8%">
+      </div>
+
+      <div class="map-road"></div>
+      <div class="map-road r2"></div>
+      <div class="map-road r3"></div>
+
+      <div class="map-route"></div>
+
+      <div class="map-marker" style="left:83%;top:19%">
+        <div class="marker-icon">🛕</div>
+        <span>Temple</span>
+      </div>
+
+      <div class="map-marker" style="left:17%;top:72%">
+        <div class="marker-icon">🏥</div>
+        <span>Hospital</span>
+      </div>
+
+      <div class="map-marker" style="left:31%;top:28%">
+        <div class="marker-icon">👮</div>
+        <span>Police</span>
+      </div>
+
+      <div class="map-marker" style="left:57%;top:73%">
+        <div class="marker-icon">🅿️</div>
+        <span>Parking</span>
+      </div>
+
+      <div class="map-marker" style="left:45%;top:50%">
+        <div class="marker-icon">🛖</div>
+        <span>Rest Area</span>
+      </div>
+
+      <div class="map-marker" style="left:71%;top:42%">
+        <div class="marker-icon">🆘</div>
+        <span>Emergency Point</span>
+      </div>
+
+      <div
+        class="map-label"
+        style="left:70%;top:8%">
+        High Risk Zone 🔴
+      </div>
+
+      <div
+        class="map-label"
+        style="left:39%;top:32%">
+        Moderate Risk 🟡
+      </div>
+
+      <div
+        class="map-label"
+        style="left:8%;top:59%">
+        Safe Area 🟢
+      </div>
+
+      <div
+        style="
+        position:absolute;
+        right:15px;
+        bottom:15px;
+        background:#fff;
+        padding:11px;
+        border-radius:13px;
+        z-index:6;
+        box-shadow:0 5px 16px #0001;
+        font-size:12px">
+
+        <b>Recommended Route A</b>
+
+        <br>
+
+        <span class="good">
+          Low Risk · Low Crowd · 32 min
+        </span>
+
+      </div>
+
+    </div>
+
+    <div>
+
+      <div class="card">
+
+        <h3 style="margin-top:0">
+          Recommended Routes
+        </h3>
+
+        <div
+          class="route-card selected"
+          onclick="selectRoute(this,'Recommended Route A')">
+
+          <h4>Recommended Route A</h4>
+
+          <div class="route-meta">
+
+            <span class="good">
+              🟢 Low Risk
+            </span>
+
+            <span class="good">
+              👥 Low Crowd
+            </span>
+
+            <b>32 min</b>
+
+          </div>
+
+        </div>
+
+        <div
+          class="route-card"
+          onclick="selectRoute(this,'Route B')">
+
+          <h4>Route B</h4>
+
+          <div class="route-meta">
+
+            <span class="warn">
+              🟡 Moderate Risk
+            </span>
+
+            <span class="warn">
+              👥 Moderate Crowd
+            </span>
+
+            <b>28 min</b>
+
+          </div>
+
+        </div>
+
+        <div
+          class="route-card"
+          onclick="selectRoute(this,'Route C')">
+
+          <h4>Route C</h4>
+
+          <div class="route-meta">
+
+            <span class="danger">
+              🔴 High Risk
+            </span>
+
+            <span class="danger">
+              👥 High Crowd
+            </span>
+
+            <b>24 min</b>
+
+          </div>
+
+        </div>
+
+      </div>
+
+      <div class="card" style="margin-top:16px">
+
+        <h3 style="margin-top:0">
+          Safety Legend
+        </h3>
+
+        <div class="legend">
+
+          <div class="legend-item">
+            <span class="legend-dot green"></span>
+            Safe / Low Risk
+          </div>
+
+          <div class="legend-item">
+            <span class="legend-dot yellow"></span>
+            Moderate Risk
+          </div>
+
+          <div class="legend-item">
+            <span class="legend-dot red"></span>
+            High Risk
+          </div>
+
+        </div>
+
+        <hr style="border:0;border-top:1px solid #edf1ef;margin:15px 0">
+
+        <span class="muted">
+          Nearby support
+        </span>
+
+        <p>🏥 Hospital · 800 m</p>
+        <p>👮 Police · 1.2 km</p>
+        <p>🛖 Rest Area · 500 m</p>
+
+      </div>
+
+    </div>
+
+  </div>
+
+</section>
+
+<!-- TRUSTED SERVICES -->
+
+<section id="guides" class="page">
+
+  <div class="hero">
+
+    <small>TRUSTED SERVICES MARKETPLACE</small>
+
+    <h2>Find verified local services.</h2>
+
+    <p>
+      Explore guides, drivers, hotels, shops and local experiences
+      with visible verification, ratings and experience.
+    </p>
+
+  </div>
+
+  <div class="section-title">
+    <h3>Service categories</h3>
+  </div>
+
+  <div class="service-tabs">
+
+    <button
+      class="active"
+      onclick="filterServices(this,'Guides')">
+      Guides
+    </button>
+
+    <button onclick="filterServices(this,'Drivers')">
+      Drivers
+    </button>
+
+    <button onclick="filterServices(this,'Hotels')">
+      Hotels
+    </button>
+
+    <button onclick="filterServices(this,'Shops')">
+      Shops
+    </button>
+
+    <button onclick="filterServices(this,'Local Experiences')">
+      Local Experiences
+    </button>
+
+  </div>
+
+  <div class="section-title">
+
+    <h3 id="serviceHeading">
+      Verified Guides
+    </h3>
+
+    <span class="muted">
+      Trusted local providers
+    </span>
+
+  </div>
+
+  <div class="grid three">
+
+    <div class="card provider-card">
+
+      <div class="provider-cover"></div>
+
+      <div class="provider-avatar">
+        👨‍🏫
+      </div>
+
+      <div class="provider-head">
+
+        <div>
+
+          <h3 style="margin:7px 0 4px">
+            Rajesh Kumar
+          </h3>
+
+          <div class="muted">
+            Local Guide
+          </div>
+
+        </div>
+
+        <span class="verify-badge">
+          ✓ VERIFIED
+        </span>
+
+      </div>
+
+      <div class="stars" style="margin-top:9px">
+        ★★★★★
+        <b style="color:var(--text)">
+          4.8
+        </b>
+      </div>
+
+      <div class="provider-info">
+
+        <div class="info-chip">
+          🗣️ <b>Languages</b>
+          <br>
+          Hindi / English
+        </div>
+
+        <div class="info-chip">
+          🎒 <b>Experience</b>
+          <br>
+          8 years
+        </div>
+
+      </div>
+
+      <button
+        class="btn profile-btn"
+        onclick="toast('Rajesh Kumar profile opened')">
+        View Profile
+      </button>
+
+    </div>
+
+    <div class="card provider-card">
+
+      <div class="provider-cover"></div>
+
+      <div class="provider-avatar">
+        👩‍🏫
+      </div>
+
+      <div class="provider-head">
+
+        <div>
+
+          <h3 style="margin:7px 0 4px">
+            Anita Negi
+          </h3>
+
+          <div class="muted">
+            Local Guide
+          </div>
+
+        </div>
+
+        <span class="verify-badge">
+          ✓ VERIFIED
+        </span>
+
+      </div>
+
+      <div class="stars" style="margin-top:9px">
+        ★★★★★
+        <b style="color:var(--text)">
+          4.9
+        </b>
+      </div>
+
+      <div class="provider-info">
+
+        <div class="info-chip">
+          🗣️ <b>Languages</b>
+          <br>
+          Hindi / English
+        </div>
+
+        <div class="info-chip">
+          🎒 <b>Experience</b>
+          <br>
+          6 years
+        </div>
+
+      </div>
+
+      <button
+        class="btn profile-btn"
+        onclick="toast('Anita Negi profile opened')">
+        View Profile
+      </button>
+
+    </div>
+
+    <div class="card provider-card">
+
+      <div class="provider-cover"></div>
+
+      <div class="provider-avatar">
+        👨‍🏫
+      </div>
+
+      <div class="provider-head">
+
+        <div>
+
+          <h3 style="margin:7px 0 4px">
+            Dev Singh
+          </h3>
+
+          <div class="muted">
+            Local Guide
+          </div>
+
+        </div>
+
+        <span class="verify-badge">
+          ✓ VERIFIED
+        </span>
+
+      </div>
+
+      <div class="stars" style="margin-top:9px">
+        ★★★★☆
+        <b style="color:var(--text)">
+          4.7
+        </b>
+      </div>
+
+      <div class="provider-info">
+
+        <div class="info-chip">
+          🗣️ <b>Languages</b>
+          <br>
+          Hindi / English
+        </div>
+
+        <div class="info-chip">
+          🎒 <b>Experience</b>
+          <br>
+          8 years
+        </div>
+
+      </div>
+
+      <button
+        class="btn profile-btn"
+        onclick="toast('Dev Singh profile opened')">
+        View Profile
+      </button>
+
+    </div>
+
+  </div>
+
+  <div class="card" style="margin-top:16px">
+
+    <div class="kpi">
+
+      <div>
+
+        <span class="muted">
+          TRUST PRINCIPLE
+        </span>
+
+        <h3 style="margin:5px 0">
+          Verify before you book
+        </h3>
+
+      </div>
+
+      <span class="verify-badge">
+        🛡️ TRUSTED ECOSYSTEM
+      </span>
+
+    </div>
+
+    <p class="muted">
+      Every marketplace card keeps verification, rating,
+      language and experience visible so pilgrims can make
+      informed choices.
+    </p>
+
+  </div>
+
+</section>
+
+<!-- QR VERIFICATION -->
+
+<section id="verification" class="page">
+
+  <div class="hero">
+
+    <small>TRUST & SAFETY</small>
+
+    <h2>
+      Verify a local service instantly.
+    </h2>
+
+    <p>
+      Scan a provider's QR code to check identity,
+      service credentials and community verification
+      before you book.
+    </p>
+
+  </div>
+
+  <div class="section-title">
+
+    <h3>QR Verification</h3>
+
+    <span class="muted">
+      Secure provider check
+    </span>
+
+  </div>
+
+  <div class="qr-layout">
+
+    <div class="qr-scanner card">
+
+      <div
+        class="qr-frame"
+        aria-label="QR code scanner placeholder">
+
+        <div class="qr-placeholder">
+          ▦
+        </div>
+
+        <div class="scan-line"></div>
+
+      </div>
+
+      <h3 style="margin:18px 0 5px">
+        Scan provider QR
+      </h3>
+
+      <p class="muted">
+        Point your camera at the QR code on a guide
+        or service provider's verification badge.
+      </p>
+
+      <button
+        class="btn"
+        style="margin-top:10px"
+        onclick="openQR()">
+
+        Scan QR code
+
+      </button>
+
+    </div>
+
+    <div class="card verify-card">
+
+      <div class="verify-head">
+
+        <div>
+
+          <span class="muted">
+            VERIFICATION RESULT
+          </span>
+
+          <h2
+            id="verificationTitle"
+            style="margin:6px 0 0">
+
+            Verification Successful
+
+          </h2>
+
+        </div>
+
+        <span class="verify-status">
+          ● VERIFIED
+        </span>
+
+      </div>
+
+      <div class="verify-person">
+
+        <div class="verify-avatar">
+          👨‍🏫
+        </div>
+
+        <div>
+
+          <h2 style="margin:0">
+            Rajesh Kumar
+          </h2>
+
+          <p class="muted" style="margin:5px 0">
+            Local Guide
+          </p>
+
+          <span class="badge">
+            ✓ TRUSTED PROVIDER
+          </span>
+
+        </div>
+
+      </div>
+
+      <div class="grid two">
+
+        <div>
+
+          <span class="muted">
+            Verified date
+          </span>
+
+          <h3 style="margin:5px 0">
+            11 Sep 2026
+          </h3>
+
+        </div>
+
+        <div>
+
+          <span class="muted">
+            Service category
+          </span>
+
+          <h3 style="margin:5px 0">
+            Local Guide
+          </h3>
+
+        </div>
+
+      </div>
+
+      <div class="verify-checks">
+
+        <div class="verify-check">
+
+          <span>✓</span>
+
+          <div>
+
+            <b>Identity Verified</b>
+
+            <div class="muted">
+              Provider identity confirmed
+            </div>
+
+          </div>
+
+        </div>
+
+        <div class="verify-check">
+
+          <span>✓</span>
+
+          <div>
+
+            <b>Service Verified</b>
+
+            <div class="muted">
+              Guide service credentials checked
+            </div>
+
+          </div>
+
+        </div>
+
+        <div class="verify-check">
+
+          <span>✓</span>
+
+          <div>
+
+            <b>Community Verified</b>
+
+            <div class="muted">
+              Positive community trust signals
+            </div>
+
+          </div>
+
+        </div>
+
+      </div>
+
+      <div class="trust-score">
+
+        <div>🛡️</div>
+
+        <div>
+
+          <span class="muted">
+            Trust score
+          </span>
+
+          <br>
+
+          <strong>
+            94/100
+          </strong>
+
+        </div>
+
+        <div
+          class="muted"
+          style="margin-left:auto">
+
+          <b class="good">
+            Excellent
+          </b>
+
+          <br>
+
+          High confidence
+
+        </div>
+
+      </div>
+
+    </div>
+
+  </div>
+
+</section>
+
+<!-- HERITAGE -->
+
+<section id="heritage" class="page">
+
+  <div class="hero">
+
+    <small>DIGITAL HERITAGE</small>
+
+    <h2>
+      Experience the story behind the journey.
+    </h2>
+
+    <p>
+      Short, accessible stories help pilgrims connect
+      with local history, mythology, architecture and traditions.
+    </p>
+
+  </div>
+
+  <div class="section-title">
+
+    <h3>
+      Featured heritage
+    </h3>
+
+  </div>
+
+  <div class="grid three">
+
+    <div class="card">
+
+      <div style="font-size:42px">
+        🛕
+      </div>
+
+      <h3>
+        Kedarnath Temple
+      </h3>
+
+      <p class="muted">
+        History · Architecture · Spiritual traditions
+      </p>
+
+      <button
+        class="btn"
+        onclick="toast('5-minute story started ▶')">
+
+        ▶ 5-min story
+
+      </button>
+
+    </div>
+
+    <div class="card">
+
+      <div style="font-size:42px">
+        🏔️
+      </div>
+
+      <h3>
+        Himalayan Trails
+      </h3>
+
+      <p class="muted">
+        Local routes · Landscapes · Oral traditions
+      </p>
+
+      <button
+        class="btn light"
+        onclick="toast('Heritage story opened')">
+
+        Explore story
+
+      </button>
+
+    </div>
+
+    <div class="card">
+
+      <div style="font-size:42px">
+        🎵
+      </div>
+
+      <h3>
+        Local Culture
+      </h3>
+
+      <p class="muted">
+        Music · Food · Festivals · Community
+      </p>
+
+      <button
+        class="btn light"
+        onclick="toast('Local culture guide opened')">
+
+        Explore culture
+
+      </button>
+
+    </div>
+
+  </div>
+
+  <div class="card" style="margin-top:16px">
+
+    <h3>
+      Did you know?
+    </h3>
+
+    <p>
+      The Himalayan pilgrimage experience includes architecture,
+      oral histories, local traditions and landscapes—not only
+      the destination itself.
+    </p>
+
+  </div>
+
+  <div class="section-title ar-section">
+
+    <div>
+
+      <h3>
+        AR HERITAGE EXPERIENCE
+      </h3>
+
+      <span class="muted">
+        Immersive visual preview
+      </span>
+
+    </div>
+
+  </div>
+
+  <div class="ar-view">
+
+    <div class="ar-top">
+
+      <span class="ar-pill">
+
+        <span class="ar-dot"></span>
+
+        AR MODE
+
+      </span>
+
+      <span class="ar-pill">
+        📍 Kedarnath · Heritage Zone
+      </span>
+
+    </div>
+
+    <div class="ar-middle">
+
+      <div class="ar-frame">
+
+        <span class="ar-corner at1"></span>
+        <span class="ar-corner at2"></span>
+        <span class="ar-corner at3"></span>
+        <span class="ar-corner at4"></span>
+
+      </div>
+
+      <div class="landmark-pin">
+
+        <div class="landmark-marker">
+          🛕
+        </div>
+
+        <div class="landmark-label">
+          AR Landmark Detected
+        </div>
+
+      </div>
+
+    </div>
+
+    <div class="ar-info">
+
+      <h3>
+        Explore Heritage in AR
+      </h3>
+
+      <p>
+        Point your camera at a heritage landmark
+        to discover its history, stories and cultural significance.
+      </p>
+
+      <h3 style="font-size:16px">
+        Kedarnath Temple
+      </h3>
+
+      <p>
+        Ancient Himalayan shrine
+      </p>
+
+      <strong>
+        Historical Facts
+      </strong>
+
+      <ul class="facts">
+
+        <li>
+          Historic pilgrimage destination
+        </li>
+
+        <li>
+          Himalayan temple architecture
+        </li>
+
+        <li>
+          Important cultural heritage site
+        </li>
+
+      </ul>
+
+      <div class="ar-actions">
+
+        <button
+          class="btn"
+          onclick="toast('Heritage details opened')">
+
+          Learn More
+
+        </button>
+
+        <button
+          class="btn light"
+          onclick="toast('▶ Historical story started')">
+
+          Listen to Story ▶
+
+        </button>
+
+      </div>
+
+    </div>
+
+    <div class="ar-bottom">
+
+      <span class="ar-pill">
+
+        <span class="ar-dot"></span>
+
+        AR Landmark Detected
+
+      </span>
+
+      <div class="ar-controls">
+
+        <button
+          class="icon-btn"
+          onclick="toast('Location overlay toggled')">
+
+          📍
+
+        </button>
+
+        <button
+          class="icon-btn"
+          onclick="toast('Camera controls opened')">
+
+          ◉
+
+        </button>
+
+      </div>
+
+    </div>
+
+  </div>
+
+</section>
+
+<!-- HEALTH -->
+
+<section id="health" class="page">
+
+  <div class="grid two">
+
+    <div class="card">
+
+      <div class="health-score">
+
+        <div class="circle">
+          <b>78</b>
+        </div>
+
+        <div>
+
+          <span class="muted">
+            Altitude health score
+          </span>
+
+          <h2 class="good">
+            Moderate caution
+          </h2>
+
+          <p class="muted">
+            Current altitude: 3,583 m
+          </p>
+
+        </div>
+
+      </div>
+
+      <hr
+        style="
+        border:0;
+        border-top:1px solid #edf1ef;
+        margin:20px 0">
+
+      <h3>
+        Symptoms check
+      </h3>
+
+      <label>
+        <input type="checkbox">
+        Headache
+      </label>
+
+      <br>
+
+      <label>
+        <input type="checkbox">
+        Dizziness
+      </label>
+
+      <br>
+
+      <label>
+        <input type="checkbox">
+        Nausea
+      </label>
+
+      <br>
+
+      <label>
+        <input type="checkbox">
+        Shortness of breath
+      </label>
+
+      <br>
+
+      <label>
+        <input type="checkbox">
+        Extreme fatigue
+      </label>
+
+      <br>
+
+      <button
+        class="btn"
+        onclick="toast('Risk assessment simulated')">
+
+        Check my risk
+
+      </button>
+
+    </div>
+
+    <div class="card">
+
+      <h3>
+        🏥 Nearby support
+      </h3>
+
+      <div class="kpi">
+
+        <span>
+          Medical camp
+        </span>
+
+        <b>
+          800 m
+        </b>
+
+      </div>
+
+      <p class="muted">
+        First aid and altitude support
+      </p>
+
+      <div class="kpi">
+
+        <span>
+          Safe shelter
+        </span>
+
+        <b>
+          1.1 km
+        </b>
+
+      </div>
+
+      <p class="muted">
+        Designated rest location
+      </p>
+
+      <div class="kpi">
+
+        <span>
+          Hydration
+        </span>
+
+        <b>
+          72%
+        </b>
+
+      </div>
+
+      <div class="progress">
+        <span style="width:72%"></span>
+      </div>
+
+      <p class="muted">
+        Prototype guidance only; seek qualified medical help
+        for concerning symptoms.
+      </p>
+
+    </div>
+
+  </div>
+
+</section>
+
+<!-- EMERGENCY SOS -->
+
+<section id="sos" class="page">
+
+  <div class="grid two">
+
+    <div class="card sos">
+
+      <div>
+
+        <div
+          style="
+          font-size:13px;
+          color:var(--muted);
+          font-weight:700">
+
+          EMERGENCY SOS
+
+        </div>
+
+        <button
+          class="sos-button"
+          onclick="openSOS()">
+
+          SOS
+
+        </button>
+
+        <p class="muted">
+          Choose an emergency service and simulate
+          sending your request.
+        </p>
+
+      </div>
+
+    </div>
+
+    <div class="card">
+
+      <h3>
+        Emergency services
+      </h3>
+
+      <p class="muted">
+        Select the type of assistance you need.
+      </p>
+
+      <div class="grid emergency-grid">
+
+        <div class="card emergency-card">
+
+          <div class="emergency-icon">
+            🚑
+          </div>
+
+          <h3>
+            Medical Response
+          </h3>
+
+          <p>
+            Get immediate medical assistance
+          </p>
+
+          <button
+            class="btn"
+            onclick="openSOS('Medical Response')">
+
+            Request Medical Help
+
+          </button>
+
+        </div>
+
+        <div class="card emergency-card">
+
+          <div class="emergency-icon">
+            👮
+          </div>
+
+          <h3>
+            Police Assistance
+          </h3>
+
+          <p>
+            Contact emergency police support
+          </p>
+
+          <button
+            class="btn"
+            onclick="openSOS('Police Assistance')">
+
+            Request Police Help
+
+          </button>
+
+        </div>
+
+        <div class="card emergency-card">
+
+          <div class="emergency-icon">
+            🚁
+          </div>
+
+          <h3>
+            Mountain Rescue
+          </h3>
+
+          <p>
+            Request rescue assistance in difficult terrain
+          </p>
+
+          <button
+            class="btn"
+            onclick="openSOS('Mountain Rescue')">
+
+            Request Mountain Rescue
+
+          </button>
+
+        </div>
+
+      </div>
+
+      <hr
+        style="
+        border:0;
+        border-top:1px solid #edf1ef;
+        margin:18px 0">
+
+      <h3>
+        Your location
+      </h3>
+
+      <p class="muted">
+        Kedarnath Trail · 1.4 km from Temple
+      </p>
+
+      <h3>
+        Safe zones
+      </h3>
+
+      <p>
+        🏥 Medical Camp · 800 m
+      </p>
+
+      <p>
+        🛖 Shelter · 1.1 km
+      </p>
+
+    </div>
+
+  </div>
+
+</section>
+
+<!-- AUTHORITY DASHBOARD -->
+
+<section id="admin" class="page">
+
+  <div class="hero">
+
+    <small>
+      AUTHORITY COMMAND CENTER
+    </small>
+
+    <h2>
+      See risk before it becomes an incident.
+    </h2>
+
+    <p>
+      Monitor pilgrim footfall, crowd density,
+      weather alerts, routes and emergency incidents
+      from one dashboard.
+    </p>
+
+  </div>
+
+  <div
+    class="grid four"
+    style="margin-top:16px">
+
+    <div class="card">
+
+      <span class="muted">
+        Pilgrims today
+      </span>
+
+      <h2>
+        24,832
+      </h2>
+
+      <b class="good">
+        ↑ 12%
+      </b>
+
+    </div>
+
+    <div class="card">
+
+      <span class="muted">
+        Peak crowd
+      </span>
+
+      <h2>
+        68%
+      </h2>
+
+      <b class="warn">
+        Moderate
+      </b>
+
+    </div>
+
+    <div class="card">
+
+      <span class="muted">
+        Active alerts
+      </span>
+
+      <h2>
+        3
+      </h2>
+
+      <b class="danger">
+        Needs attention
+      </b>
+
+    </div>
+
+    <div class="card">
+
+      <span class="muted">
+        Incidents
+      </span>
+
+      <h2>
+        7
+      </h2>
+
+      <b>
+        Today
+      </b>
+
+    </div>
+
+  </div>
+
+  <div class="section-title">
+
+    <h3>
+      Live incidents & alerts
+    </h3>
+
+  </div>
+
+  <div class="card">
+
+    <table class="table">
+
+      <thead>
+
+        <tr>
+          <th>Location</th>
+          <th>Type</th>
+          <th>Severity</th>
+          <th>Status</th>
+        </tr>
+
+      </thead>
+
+      <tbody>
+
+        <tr>
+          <td>Temple Zone</td>
+          <td>Crowd density</td>
+          <td class="danger">High</td>
+          <td>Monitoring</td>
+        </tr>
+
+        <tr>
+          <td>Linchauli</td>
+          <td>Weather warning</td>
+          <td class="warn">Moderate</td>
+          <td>Active</td>
+        </tr>
+
+        <tr>
+          <td>Trail 4</td>
+          <td>Medical assistance</td>
+          <td class="warn">Moderate</td>
+          <td>Responding</td>
+        </tr>
+
+        <tr>
+          <td>Gaurikund</td>
+          <td>Traffic</td>
+          <td class="good">Low</td>
+          <td>Normal</td>
+        </tr>
+
+      </tbody>
+
+    </table>
+
+  </div>
+
+</section>
+
+<!-- PLANNER -->
+
+<section id="planner" class="page">
+
+  <div class="hero">
+
+    <small>
+      SMART YATRA PLANNER
+    </small>
+
+    <h2>
+      Build a safer route.
+    </h2>
+
+    <p>
+      Combine crowd, weather and heritage preferences
+      to create a recommended itinerary.
+    </p>
+
+  </div>
+
+  <div
+    class="card"
+    style="margin-top:16px">
+
+    <div class="grid three">
+
+      <label>
+
+        Destination<br>
+
+        <select
+          id="dest"
+          style="
+          width:100%;
+          padding:12px;
+          border:1px solid var(--border);
+          border-radius:10px;
+          margin-top:7px">
+
+          <option>
+            Kedarnath
+          </option>
+
+          <option>
+            Badrinath
+          </option>
+
+          <option>
+            Gangotri
+          </option>
+
+        </select>
+
+      </label>
+
+      <label>
+
+        Starting point<br>
+
+        <select
+          style="
+          width:100%;
+          padding:12px;
+          border:1px solid var(--border);
+          border-radius:10px;
+          margin-top:7px">
+
+          <option>
+            Rishikesh
+          </option>
+
+          <option>
+            Haridwar
+          </option>
+
+          <option>
+            Dehradun
+          </option>
+
+        </select>
+
+      </label>
+
+      <label>
+
+        Travel date<br>
+
+        <input
+          type="date"
+          style="
+          width:100%;
+          padding:11px;
+          border:1px solid var(--border);
+          border-radius:10px;
+          margin-top:7px">
+
+      </label>
+
+    </div>
+
+    <div style="margin-top:18px">
+
+      <label>
+        <input type="checkbox" checked>
+        Avoid crowded routes
+      </label>
+
+      <br>
+
+      <label>
+        <input type="checkbox" checked>
+        Avoid high weather risk
+      </label>
+
+      <br>
+
+      <label>
+        <input type="checkbox" checked>
+        Include heritage stops
+      </label>
+
+    </div>
+
+    <button
+      class="btn"
+      style="margin-top:18px"
+      onclick="toast('Safe Yatra generated successfully')">
+
+      Generate safe yatra
+
+    </button>
+
+  </div>
+
+  <div
+    class="card"
+    style="margin-top:16px">
+
+    <h3>
+      Recommended Yatra
+    </h3>
+
+    <div class="route">
+
+      <span class="dot"></span>
+      Rishikesh
+
+      <span class="line"></span>
+
+      <span class="dot"></span>
+      Guptkashi
+
+      <span class="line"></span>
+
+      <span class="dot"></span>
+      Kedarnath
+
+    </div>
+
+    <h2 class="good">
+      Safety Score · 87/100
+    </h2>
+
+    <p class="muted">
+      Crowd 🟢 &nbsp;
+      Weather 🟢 &nbsp;
+      Health 🟡
+    </p>
+
+  </div>
+
+</section>
+
+</main>
+
+</div>
+
+<!-- QR SCANNER MODAL -->
+
+<div
+  class="modal-backdrop"
+  id="qrModal"
+  aria-hidden="true">
+
+  <div class="qr-modal">
+
+    <div class="qr-camera">
+
+      <div class="modal-top">
+
+        <div>
+
+          <div
+            style="
+            font-size:11px;
+            opacity:.7;
+            letter-spacing:.08em">
+
+            SECURE VERIFICATION
+
+          </div>
+
+          <h3>
+            QR Scanner
+          </h3>
+
+        </div>
+
+        <button
+          class="icon-btn"
+          onclick="closeQR()"
+          aria-label="Close scanner">
+
+          ✕
+
+        </button>
+
+      </div>
+
+      <div class="scanner-area">
+
+        <span class="corner c1"></span>
+        <span class="corner c2"></span>
+        <span class="corner c3"></span>
+        <span class="corner c4"></span>
+
+        <div class="scan-line"></div>
+
+        <div class="qr-placeholder"></div>
+
+      </div>
+
+      <div class="scan-copy">
+
+        <h3>
+          Scan provider QR code
+        </h3>
+
+        <p>
+          Place the QR code inside the frame
+        </p>
+
+      </div>
+
+      <div class="scanner-controls">
+
+        <button
+          class="icon-btn"
+          onclick="toast('Flashlight toggled')">
+
+          🔦
+
+        </button>
+
+        <button
+          class="icon-btn"
+          onclick="toast('Gallery picker simulated')">
+
+          🖼️
+
+        </button>
+
+      </div>
+
+      <div class="scanner-actions">
+
+        <button
+          class="btn"
+          onclick="closeQR()">
+
+          Cancel Scan
+
+        </button>
+
+        <button
+          class="btn light"
+          onclick="simulateQR()">
+
+          Simulate Scan
+
+        </button>
+
+      </div>
+
+    </div>
+
+  </div>
+
+</div>
+
+<!-- SOS CONFIRMATION -->
+
+<div
+  class="modal-backdrop"
+  id="sosModal"
+  aria-hidden="true">
+
+  <div class="modal-card">
+
+    <div class="modal-top">
+
+      <div>
+
+        <div
+          class="danger"
+          style="
+          font-size:11px;
+          font-weight:800;
+          letter-spacing:.08em">
+
+          EMERGENCY SOS
+
+        </div>
+
+        <h2>
+          Which emergency service do you need?
+        </h2>
+
+      </div>
+
+      <button
+        class="icon-btn"
+        style="background:#edf3ef;color:var(--green)"
+        onclick="closeSOS()">
+
+        ✕
+
+      </button>
+
+    </div>
+
+    <div class="choice-grid">
+
+      <button
+        class="choice"
+        data-service="Medical Response"
+        onclick="selectEmergency(this)">
+
+        <span class="choice-icon">
+          🚑
+        </span>
+
+        <span>
+
+          <b>
+            Medical Response
+          </b>
+
+          <br>
+
+          <span class="muted">
+            Immediate medical assistance
+          </span>
+
+        </span>
+
+      </button>
+
+      <button
+        class="choice"
+        data-service="Police Assistance"
+        onclick="selectEmergency(this)">
+
+        <span class="choice-icon">
+          👮
+        </span>
+
+        <span>
+
+          <b>
+            Police Assistance
+          </b>
+
+          <br>
+
+          <span class="muted">
+            Emergency police support
+          </span>
+
+        </span>
+
+      </button>
+
+      <button
+        class="choice"
+        data-service="Mountain Rescue"
+        onclick="selectEmergency(this)">
+
+        <span class="choice-icon">
+          🚁
+        </span>
+
+        <span>
+
+          <b>
+            Mountain Rescue
+          </b>
+
+          <br>
+
+          <span class="muted">
+            Rescue in difficult terrain
+          </span>
+
+        </span>
+
+      </button>
+
+    </div>
+
+    <div class="modal-actions">
+
+      <button
+        class="btn red"
+        onclick="confirmSOS()">
+
+        Confirm Emergency Request
+
+      </button>
+
+      <button
+        class="btn light"
+        onclick="closeSOS()">
+
+        Cancel
+
+      </button>
+
+    </div>
+
+  </div>
+
+</div>
+
+<!-- SOS SUCCESS -->
+
+<div
+  class="modal-backdrop"
+  id="sosSuccess"
+  aria-hidden="true">
+
+  <div class="modal-card success-box">
+
+    <div class="success-icon">
+      ✓
+    </div>
+
+    <div
+      class="danger"
+      style="
+      font-size:11px;
+      font-weight:800;
+      letter-spacing:.08em">
+
+      EMERGENCY REQUEST
+
+    </div>
+
+    <h2>
+      SOS REQUEST SENT
+    </h2>
+
+    <p class="muted">
+      Emergency assistance has been notified.
+    </p>
+
+    <div class="success-meta">
+
+      <div>
+
+        <span>
+          Selected service
+        </span>
+
+        <b id="successService">
+          Medical Response
+        </b>
+
+      </div>
+
+      <div>
+
+        <span>
+          Location
+        </span>
+
+        <b>
+          Kedarnath Trail · 1.4 km from Temple
+        </b>
+
+      </div>
+
+      <div>
+
+        <span>
+          Status
+        </span>
+
+        <b class="good">
+          Emergency team notified
+        </b>
+
+      </div>
+
+      <div>
+
+        <span>
+          Response
+        </span>
+
+        <b>
+          Help is being coordinated
+        </b>
+
+      </div>
+
+      <div>
+
+        <span>
+          Reference
+        </span>
+
+        <b
+          class="ref"
+          id="successRef">
+
+          DIVYA-ER-4821
+
+        </b>
+
+      </div>
+
+    </div>
+
+    <button
+      class="btn"
+      style="width:100%"
+      onclick="closeSuccess()">
+
+      Close
+
+    </button>
+
+  </div>
+
+</div>
+
+<div class="mobile-nav">
+
+  <button onclick="showPage('home')">
+    🏠<br>Home
+  </button>
+
+  <button onclick="showPage('safety')">
+    🛡️<br>Safety
+  </button>
+
+  <button onclick="showPage('crowd')">
+    🗺️<br>Map
+  </button>
+
+  <button onclick="showPage('guides')">
+    ✓<br>Guides
+  </button>
+
+  <button onclick="showPage('verification')">
+    ▣<br>Verify
+  </button>
+
+  <button onclick="showPage('sos')">
+    🆘<br>SOS
+  </button>
+
+</div>
+
+<div
+  class="toast"
+  id="toast">
+</div>
+
+<script>
+
+function showPage(id,btn){
+
+  document
+    .querySelectorAll('.page')
+    .forEach(p=>p.classList.remove('active'));
+
+  const page=document.getElementById(id);
+
+  if(!page)return;
+
+  page.classList.add('active');
+
+  document
+    .querySelectorAll('.nav button')
+    .forEach(b=>b.classList.remove('active'));
+
+  if(btn){
+    btn.classList.add('active');
+  }
+
+  const names={
+    home:'Overview',
+    safety:'Live Safety',
+    crowd:'Crowd & Routes',
+    guides:'Verified Guides',
+    verification:'QR Verification',
+    heritage:'Heritage Explorer',
+    health:'Health & Altitude',
+    sos:'Emergency SOS',
+    admin:'Authority Dashboard',
+    planner:'Smart Yatra Planner'
+  };
+
+  document.getElementById('pageName').textContent=
+    names[id]||id;
+
+  document.getElementById('title').textContent=
+    id==='home'
+      ? 'Good morning, Pilgrim 🙏'
+      : names[id];
+
+  window.scrollTo({
+    top:0,
+    behavior:'smooth'
+  });
+
+}
+
+function toast(msg){
+
+  const t=document.getElementById('toast');
+
+  t.textContent=msg;
+
+  t.style.display='block';
+
+  clearTimeout(window.tt);
+
+  window.tt=setTimeout(()=>{
+    t.style.display='none';
+  },2500);
+
+}
+
+/* SMART SAFETY MAP */
+
+function selectRoute(el,name){
+
+  document
+    .querySelectorAll('.route-card')
+    .forEach(c=>c.classList.remove('selected'));
+
+  el.classList.add('selected');
+
+  toast(name+' selected');
+
+}
+
+/* TRUSTED SERVICES */
+
+function filterServices(btn,category){
+
+  document
+    .querySelectorAll('.service-tabs button')
+    .forEach(b=>b.classList.remove('active'));
+
+  btn.classList.add('active');
+
+  document.getElementById('serviceHeading').textContent=
+    'Verified '+category;
+
+  toast(category+' category selected');
+
+}
+
+/* QR VERIFICATION */
+
+function openQR(){
+
+  const modal=document.getElementById('qrModal');
+
+  modal.classList.add('open');
+
+  modal.setAttribute(
+    'aria-hidden',
+    'false'
+  );
+
+}
+
+function closeQR(){
+
+  const modal=document.getElementById('qrModal');
+
+  modal.classList.remove('open');
+
+  modal.setAttribute(
+    'aria-hidden',
+    'true'
+  );
+
+}
+
+function simulateQR(){
+
+  closeQR();
+
+  verifyQR();
+
+}
+
+function verifyQR(){
+
+  const title=
+    document.getElementById('verificationTitle');
+
+  if(title){
+
+    title.textContent=
+      'Verification Successful';
+
+    toast(
+      '✓ QR scanned — provider verification confirmed'
+    );
+
+  }
+
+}
+
+/* EMERGENCY SOS */
+
+let selectedEmergency='';
+
+function openSOS(service=''){
+
+  selectedEmergency=
+    service||'';
+
+  document
+    .querySelectorAll('#sosModal .choice')
+    .forEach(c=>{
+
+      c.classList.toggle(
+        'selected',
+        c.dataset.service===selectedEmergency
+      );
+
+    });
+
+  const modal=
+    document.getElementById('sosModal');
+
+  modal.classList.add('open');
+
+  modal.setAttribute(
+    'aria-hidden',
+    'false'
+  );
+
+}
+
+function selectEmergency(el){
+
+  selectedEmergency=
+    el.dataset.service;
+
+  document
+    .querySelectorAll('#sosModal .choice')
+    .forEach(c=>
+      c.classList.remove('selected')
+    );
+
+  el.classList.add('selected');
+
+}
+
+function closeSOS(){
+
+  const modal=
+    document.getElementById('sosModal');
+
+  modal.classList.remove('open');
+
+  modal.setAttribute(
+    'aria-hidden',
+    'true'
+  );
+
+}
+
+function confirmSOS(){
+
+  if(!selectedEmergency){
+
+    toast(
+      'Please select an emergency service'
+    );
+
+    return;
+
+  }
+
+  document.getElementById(
+    'successService'
+  ).textContent=
+    selectedEmergency;
+
+  document.getElementById(
+    'successRef'
+  ).textContent=
+    'DIVYA-ER-'+
+    (1000+Math.floor(Math.random()*8999));
+
+  closeSOS();
+
+  const success=
+    document.getElementById('sosSuccess');
+
+  success.classList.add('open');
+
+  success.setAttribute(
+    'aria-hidden',
+    'false'
+  );
+
+}
+
+function closeSuccess(){
+
+  const success=
+    document.getElementById('sosSuccess');
+
+  success.classList.remove('open');
+
+  success.setAttribute(
+    'aria-hidden',
+    'true'
+  );
+
+}
+
+/* ESCAPE TO CLOSE MODALS */
+
+document.addEventListener(
+  'keydown',
+  e=>{
+
+    if(e.key==='Escape'){
+
+      closeQR();
+      closeSOS();
+      closeSuccess();
+
+    }
+
+  }
+);
+
+/* SIMULATED CROWD DATA */
+
+setInterval(()=>{
+
+  const el=
+    document.querySelector(
+      '#home .metric:nth-child(2) h3'
+    );
+
+  if(el){
+
+    el.textContent=
+      (58+
+       Math.floor(
+         Math.random()*12
+       ))+'%';
+
+  }
+
+},5000);
+
+</script>
+
+</body>
+</html>
